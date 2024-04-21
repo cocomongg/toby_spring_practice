@@ -1,5 +1,7 @@
 package org.practice;
 
+import org.practice.user.domain.DUserDao;
+import org.practice.user.domain.NUserDao;
 import org.practice.user.domain.User;
 import org.practice.user.domain.UserDao;
 
@@ -7,7 +9,8 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
+        UserDao userDao = new NUserDao();
+//        UserDao userDao = new DUserDao();
 
         User user = new User();
         user.setId("firstUserId");

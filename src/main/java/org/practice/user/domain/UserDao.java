@@ -2,11 +2,12 @@ package org.practice.user.domain;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
+
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+
     public void addUser(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection =
-                DriverManager.getConnection("jdbc:mysql://localhost/springboot", "root", "");
+        Connection connection = this.getConnection();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
@@ -21,9 +22,7 @@ public class UserDao {
     }
 
     public User getById(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection =
-                DriverManager.getConnection("jdbc:mysql://localhost/springboot", "root", "");
+        Connection connection = this.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
         preparedStatement.setString(1, id);
