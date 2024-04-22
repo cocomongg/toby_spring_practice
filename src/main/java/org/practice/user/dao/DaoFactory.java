@@ -6,7 +6,10 @@ import org.practice.user.domain.UserDao;
 
 public class DaoFactory {
     public UserDao userDao () {
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-        return new UserDao(connectionMaker);
+        return new UserDao(this.connectionMaker());
+    }
+
+    public ConnectionMaker connectionMaker() {
+        return new DConnectionMaker();
     }
 }
