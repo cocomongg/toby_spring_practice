@@ -1,4 +1,4 @@
-package org.practice.user.domain;
+package org.practice.user.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

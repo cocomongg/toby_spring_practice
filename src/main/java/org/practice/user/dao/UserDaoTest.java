@@ -1,6 +1,5 @@
-package org.practice.user.domain;
+package org.practice.user.dao;
 
-import org.practice.user.dao.DaoFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

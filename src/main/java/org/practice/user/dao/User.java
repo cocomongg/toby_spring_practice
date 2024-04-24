@@ -1,4 +1,4 @@
-package org.practice.user.domain;
+package org.practice.user.dao;
 
 public class User {
     String id;
