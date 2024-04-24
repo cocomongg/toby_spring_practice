@@ -5,7 +5,13 @@ import java.sql.*;
 public class UserDao {
     private ConnectionMaker connectionMaker;
 
-    public UserDao (ConnectionMaker connectionMaker) {
+    // 생성자 메서드를 통한 주입
+//    public UserDao (ConnectionMaker connectionMaker) {
+//        this.connectionMaker = connectionMaker;
+//    }
+
+    // 수정자 메서드를 통한 주입
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 
