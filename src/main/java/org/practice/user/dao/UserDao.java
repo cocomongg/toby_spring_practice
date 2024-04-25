@@ -1,22 +1,17 @@
 package org.practice.user.dao;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
-    // 생성자 메서드를 통한 주입
-//    public UserDao (ConnectionMaker connectionMaker) {
-//        this.connectionMaker = connectionMaker;
-//    }
-
-    // 수정자 메서드를 통한 주입
-    public void setConnectionMaker(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public void addUser(User user) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
+    public void addUser(User user) throws SQLException {
+        Connection connection = dataSource.getConnection();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
@@ -30,8 +25,8 @@ public class UserDao {
         connection.close();
     }
 
-    public User getById(String id) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
+    public User getById(String id) throws SQLException {
+        Connection connection = dataSource.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
         preparedStatement.setString(1, id);

@@ -22,7 +22,7 @@ public class CountingDaoTest {
         System.out.printf("user 조회 성공 id: %s, name: %s, password: %s%n",
                 findUser.getId(), findUser.getName(), findUser.getPassword());
 
-        CountingConnectionMaker connectionMaker = context.getBean("connectionMaker", CountingConnectionMaker.class);
-        System.out.println("Connection counter: " + connectionMaker.getCounter());
+        CountingConnectionDataSource dataSource = context.getBean("dataSource", CountingConnectionDataSource.class);
+        System.out.println("Connection counter: " + dataSource.getCounter());
     }
 }
