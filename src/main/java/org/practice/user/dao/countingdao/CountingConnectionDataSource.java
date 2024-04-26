@@ -1,4 +1,4 @@
-package org.practice.user.dao;
+package org.practice.user.dao.countingdao;
 
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 

@@ -1,4 +1,4 @@
-package org.practice.user.dao;
+package org.practice.user.dao.basicdao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

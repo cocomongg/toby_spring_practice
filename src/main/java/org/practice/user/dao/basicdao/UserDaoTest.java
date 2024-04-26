@@ -1,7 +1,7 @@
-package org.practice.user.dao;
+package org.practice.user.dao.basicdao;
 
+import org.practice.user.dao.User;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;

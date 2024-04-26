@@ -1,4 +1,6 @@
-package org.practice.user.dao;
+package org.practice.user.dao.basicdao;
+
+import org.practice.user.dao.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
