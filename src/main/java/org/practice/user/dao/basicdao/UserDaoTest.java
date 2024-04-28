@@ -15,12 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 
     @Autowired
-    private ApplicationContext context;
-
     private UserDao userDao;
     private User user1;
     private User user2;
@@ -28,8 +26,6 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        this.userDao = this.context.getBean("userDao", UserDao.class);
-
         this.user1 = new User("id1", "name1", "password1");
         this.user2 = new User("id2", "name2", "password2");
         this.user3 = new User("id3", "name3", "password3");
