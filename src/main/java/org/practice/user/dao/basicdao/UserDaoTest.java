@@ -1,19 +1,26 @@
 package org.practice.user.dao.basicdao;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.practice.user.dao.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
+
+    @Autowired
+    private ApplicationContext context;
+
     private UserDao userDao;
     private User user1;
     private User user2;
@@ -21,8 +28,7 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        this.userDao = context.getBean("userDao", UserDao.class);
+        this.userDao = this.context.getBean("userDao", UserDao.class);
 
         this.user1 = new User("id1", "name1", "password1");
         this.user2 = new User("id2", "name2", "password2");
