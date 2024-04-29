@@ -5,22 +5,19 @@ import org.junit.jupiter.api.Test;
 import org.practice.user.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.ContextConfiguration;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//@SpringBootTest
-//@ContextConfiguration(locations = "/test-applicationContext.xml")
+@SpringBootTest
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 
-//    @Autowired
+    @Autowired
     private UserDao userDao;
     private User user1;
     private User user2;
@@ -28,11 +25,6 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        userDao = new UserDao();
-        DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/testdb", "root",
-                "pcs8437!", true);
-        userDao.setDataSource(dataSource);
-
         this.user1 = new User("id1", "name1", "password1");
         this.user2 = new User("id2", "name2", "password2");
         this.user3 = new User("id3", "name3", "password3");

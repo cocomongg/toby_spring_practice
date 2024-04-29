@@ -9,7 +9,12 @@
         <property name="password" value="pcs8437!"/>
     </bean>
 
+    <bean id="jdbcContext" class="org.practice.user.dao.JdbcContext">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
     <bean id="userDao" class="org.practice.user.dao.basicdao.UserDao">
         <property name="dataSource" ref="dataSource"/>
+        <property name="jdbcContext" ref="jdbcContext"/>
     </bean>
 </beans>
