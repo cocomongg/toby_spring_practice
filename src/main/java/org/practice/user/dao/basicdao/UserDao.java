@@ -17,70 +17,157 @@ public class UserDao {
     }
 
     public void addUser(User user) throws SQLException {
-        Connection connection = dataSource.getConnection();
+        this.jdbcContextWithStatementStrategy(new StatementStrategy() {
+            @Override
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps =
+                        c.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
+                ps.setString(1, user.getId());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getPassword());
 
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
-        preparedStatement.setString(1, user.getId());
-        preparedStatement.setString(2, user.getName());
-        preparedStatement.setString(3, user.getPassword());
-
-        preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-        connection.close();
+                return ps;
+            }
+        });
     }
 
     public User getById(String id) throws SQLException {
-        Connection connection = dataSource.getConnection();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
-        preparedStatement.setString(1, id);
+        try {
+            connection = dataSource.getConnection();
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        User user = null;
-        if(resultSet.next()) {
-            user = new User();
-            user.setId(resultSet.getString("id"));
-            user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("password"));
+            preparedStatement = connection.prepareStatement("select * from users where id = ?");
+            preparedStatement.setString(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+            User user = null;
+            if(resultSet.next()) {
+                user = new User();
+                user.setId(resultSet.getString("id"));
+                user.setName(resultSet.getString("name"));
+                user.setPassword(resultSet.getString("password"));
+            }
+
+            if(user == null) {
+                throw new EmptyResultDataAccessException(1);
+            }
+
+            return user;
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+
+                }
+            }
+
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+
+                }
+            }
         }
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        if(user == null) {
-            throw new EmptyResultDataAccessException(1);
-        }
-
-        return user;
     }
 
     public void deleteAll() throws SQLException {
-        Connection connection = dataSource.getConnection();
+        // StatementStrategy st = new DeleteAllStatement(); // 전략 생성
+        // this.jdbcContextWithStatementStrategy(st); // 전략 전달 및 컨텍스트 호출
 
-        PreparedStatement preparedStatement = connection.prepareStatement("delete from users");
-
-        preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-        connection.close();
+        // 익명 클래스 사용
+        this.jdbcContextWithStatementStrategy(new StatementStrategy() {
+            @Override
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                return c.prepareStatement("delete from users");
+            }
+        });
     }
     
     public int getCount() throws SQLException {
-        Connection connection = dataSource.getConnection();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select count(*) from users");
+        try {
+            connection = dataSource.getConnection();
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        int count = resultSet.getInt(1);
+            preparedStatement = connection.prepareStatement("select count(*) from users");
 
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
 
-        return count;
-    } 
+                }
+            }
+
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+
+                }
+            }
+        }
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+
+        try {
+            c = dataSource.getConnection();
+
+            ps = stmt.makePreparedStatement(c);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+
+                }
+            }
+
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+
+                }
+            }
+        }
+    }
 }
