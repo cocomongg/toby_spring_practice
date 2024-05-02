@@ -1,5 +1,6 @@
 package org.practice.user.dao.basicdao;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.practice.user.dao.User;
@@ -9,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,10 +31,14 @@ public class UserDaoTest {
         this.user2 = new User("id2", "name2", "password2");
         this.user3 = new User("id3", "name3", "password3");
     }
+
+    @AfterEach
+    public void tearDown() throws SQLException {
+        userDao.deleteAll();
+    }
     
     @Test
     public void addAndGet() throws SQLException {
-        userDao.deleteAll();
         assertThat(userDao.getCount())
                 .isEqualTo(0);
 
@@ -56,7 +62,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException {
-        userDao.deleteAll();
         assertThat(userDao.getCount())
                 .isEqualTo(0);
 
@@ -75,10 +80,44 @@ public class UserDaoTest {
 
     @Test
     public void getUserFailure() throws SQLException {
-        userDao.deleteAll();
         assertThat(userDao.getCount())
                 .isEqualTo(0);
 
         assertThrows(EmptyResultDataAccessException.class, () -> userDao.getById("unknownId"));
+    }
+
+    @Test
+    public void getAll() throws SQLException {
+        userDao.addUser(user1);
+        List<User> users = userDao.getAll();
+        assertThat(users.size()).isEqualTo(1);
+        this.checkSameUser(user1, users.get(0));
+
+        userDao.addUser(user2);
+        users = userDao.getAll();
+        assertThat(users.size()).isEqualTo(2);
+        this.checkSameUser(user1, users.get(0));
+        this.checkSameUser(user2, users.get(1));
+
+        userDao.addUser(user3);
+        users = userDao.getAll();
+        assertThat(users.size()).isEqualTo(3);
+        this.checkSameUser(user1, users.get(0));
+        this.checkSameUser(user2, users.get(1));
+        this.checkSameUser(user3, users.get(2));
+    }
+
+    @Test
+    public void getAllWithNoSavedData() throws SQLException {
+        userDao.deleteAll();
+
+        List<User> users = userDao.getAll();
+        assertThat(users.size()).isEqualTo(0);
+    }
+
+    private void checkSameUser(User user, User savedUser) {
+        assertThat(user.getId()).isEqualTo(savedUser.getId());
+        assertThat(user.getName()).isEqualTo(savedUser.getName());
+        assertThat(user.getPassword()).isEqualTo(savedUser.getPassword());
     }
 }
