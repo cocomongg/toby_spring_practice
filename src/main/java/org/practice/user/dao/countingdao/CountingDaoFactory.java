@@ -1,6 +1,6 @@
 package org.practice.user.dao.countingdao;
 
-import org.practice.user.dao.basicdao.UserDao;
+import org.practice.user.dao.basicdao.UserDaoJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -10,10 +10,10 @@ import javax.sql.DataSource;
 @Configuration
 public class CountingDaoFactory {
     @Bean
-    public UserDao userDao () {
-        UserDao userDao = new UserDao();
-        userDao.setDataSource(dataSource());
-        return userDao;
+    public UserDaoJdbc userDao () {
+        UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
+        userDaoJdbc.setDataSource(dataSource());
+        return userDaoJdbc;
     }
 
     @Bean

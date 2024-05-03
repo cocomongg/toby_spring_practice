@@ -6,13 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.practice.user.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -20,7 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserDaoTest {
 
     @Autowired
-    private UserDao userDao;
+    private UserDao dao;
+
+    @Autowired
+    private DataSource dataSource;
+
     private User user1;
     private User user2;
     private User user3;
@@ -34,26 +43,26 @@ public class UserDaoTest {
 
     @AfterEach
     public void tearDown() throws SQLException {
-        userDao.deleteAll();
+        dao.deleteAll();
     }
     
     @Test
     public void addAndGet() throws SQLException {
-        assertThat(userDao.getCount())
+        assertThat(dao.getCount())
                 .isEqualTo(0);
 
-        userDao.addUser(user1);
-        userDao.addUser(user2);
-        assertThat(userDao.getCount())
+        dao.addUser(user1);
+        dao.addUser(user2);
+        assertThat(dao.getCount())
                 .isEqualTo(2);
 
-        User userget1 = userDao.getById(user1.getId());
+        User userget1 = dao.getById(user1.getId());
         assertThat(userget1.getName())
                 .isEqualTo(user1.getName());
         assertThat(userget1.getId())
                 .isEqualTo(user1.getId());
 
-        User userget2 = userDao.getById(user2.getId());
+        User userget2 = dao.getById(user2.getId());
         assertThat(userget2.getName())
                 .isEqualTo(user2.getName());
         assertThat(userget2.getId())
@@ -62,45 +71,45 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException {
-        assertThat(userDao.getCount())
+        assertThat(dao.getCount())
                 .isEqualTo(0);
 
-        userDao.addUser(user1);
-        assertThat(userDao.getCount())
+        dao.addUser(user1);
+        assertThat(dao.getCount())
                 .isEqualTo(1);
 
-        userDao.addUser(user2);
-        assertThat(userDao.getCount())
+        dao.addUser(user2);
+        assertThat(dao.getCount())
                 .isEqualTo(2);
 
-        userDao.addUser(user3);
-        assertThat(userDao.getCount())
+        dao.addUser(user3);
+        assertThat(dao.getCount())
                 .isEqualTo(3);
     }
 
     @Test
     public void getUserFailure() throws SQLException {
-        assertThat(userDao.getCount())
+        assertThat(dao.getCount())
                 .isEqualTo(0);
 
-        assertThrows(EmptyResultDataAccessException.class, () -> userDao.getById("unknownId"));
+        assertThrows(EmptyResultDataAccessException.class, () -> dao.getById("unknownId"));
     }
 
     @Test
     public void getAll() throws SQLException {
-        userDao.addUser(user1);
-        List<User> users = userDao.getAll();
+        dao.addUser(user1);
+        List<User> users = dao.getAll();
         assertThat(users.size()).isEqualTo(1);
         this.checkSameUser(user1, users.get(0));
 
-        userDao.addUser(user2);
-        users = userDao.getAll();
+        dao.addUser(user2);
+        users = dao.getAll();
         assertThat(users.size()).isEqualTo(2);
         this.checkSameUser(user1, users.get(0));
         this.checkSameUser(user2, users.get(1));
 
-        userDao.addUser(user3);
-        users = userDao.getAll();
+        dao.addUser(user3);
+        users = dao.getAll();
         assertThat(users.size()).isEqualTo(3);
         this.checkSameUser(user1, users.get(0));
         this.checkSameUser(user2, users.get(1));
@@ -109,10 +118,32 @@ public class UserDaoTest {
 
     @Test
     public void getAllWithNoSavedData() throws SQLException {
-        userDao.deleteAll();
+        dao.deleteAll();
 
-        List<User> users = userDao.getAll();
+        List<User> users = dao.getAll();
         assertThat(users.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void duplicateKey() {
+        dao.deleteAll();
+
+        dao.addUser(user1);
+        assertThatThrownBy(() -> dao.addUser(user1)).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
+    public void sqlExceptionTranslate() {
+        dao.deleteAll();
+
+        try{
+            dao.addUser(user1);
+            dao.addUser(user1);
+        } catch (DuplicateKeyException ex) {
+            SQLException sqlEx = (SQLException) ex.getRootCause();
+            SQLErrorCodeSQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+            assertThat(set.translate(null, null, sqlEx)).isInstanceOf(DuplicateKeyException.class);
+        }
     }
 
     private void checkSameUser(User user, User savedUser) {
