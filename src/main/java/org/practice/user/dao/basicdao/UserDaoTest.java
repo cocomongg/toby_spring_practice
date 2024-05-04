@@ -2,11 +2,12 @@ package org.practice.user.dao.basicdao;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.practice.user.dao.User;
+import org.practice.user.domain.Level;
+import org.practice.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -36,9 +37,9 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        this.user1 = new User("id1", "name1", "password1");
-        this.user2 = new User("id2", "name2", "password2");
-        this.user3 = new User("id3", "name3", "password3");
+        this.user1 = new User("id1", "name1", "password1", Level.BASIC, 1, 0);
+        this.user2 = new User("id2", "name2", "password2", Level.SILVER, 55, 10);
+        this.user3 = new User("id3", "name3", "password3", Level.GOLD, 100, 40);
     }
 
     @AfterEach
@@ -57,16 +58,10 @@ public class UserDaoTest {
                 .isEqualTo(2);
 
         User userget1 = dao.getById(user1.getId());
-        assertThat(userget1.getName())
-                .isEqualTo(user1.getName());
-        assertThat(userget1.getId())
-                .isEqualTo(user1.getId());
+        checkSameUser(user1, userget1);
 
         User userget2 = dao.getById(user2.getId());
-        assertThat(userget2.getName())
-                .isEqualTo(user2.getName());
-        assertThat(userget2.getId())
-                .isEqualTo(user2.getId());
+        checkSameUser(user2, userget2);
     }
 
     @Test
@@ -146,9 +141,33 @@ public class UserDaoTest {
         }
     }
 
+    @Test
+    public void update() {
+        dao.deleteAll();
+
+        dao.addUser(user1);
+        dao.addUser(user2);
+
+        user1.setName("update-test");
+        user1.setPassword("update-password");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(100);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User getUser1 = dao.getById(user1.getId());
+        checkSameUser(user1, getUser1);
+
+        User getUser2 = dao.getById(user2.getId());
+        checkSameUser(user2, getUser2);
+    }
+
     private void checkSameUser(User user, User savedUser) {
         assertThat(user.getId()).isEqualTo(savedUser.getId());
         assertThat(user.getName()).isEqualTo(savedUser.getName());
         assertThat(user.getPassword()).isEqualTo(savedUser.getPassword());
+        assertThat(user.getLevel()).isEqualTo(savedUser.getLevel());
+        assertThat(user.getLogin()).isEqualTo(savedUser.getLogin());
+        assertThat(user.getRecommend()).isEqualTo(savedUser.getRecommend());
     }
 }

@@ -1,6 +1,6 @@
 package org.practice.user.dao.countingdao;
 
-import org.practice.user.dao.User;
+import org.practice.user.domain.User;
 import org.practice.user.dao.basicdao.UserDaoJdbc;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
