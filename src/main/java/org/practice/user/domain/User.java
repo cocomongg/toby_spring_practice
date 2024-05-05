@@ -60,4 +60,26 @@ public class User {
     public void setRecommend(int recommend) {
         this.recommend = recommend;
     }
+
+    public boolean canUpgradeLevel() {
+        switch (this.level) {
+            case BASIC:
+                return this.login >= 50;
+            case SILVER:
+                return this.recommend >= 30;
+            case GOLD:
+                return false;
+            default:
+                throw new IllegalArgumentException("Unknown level: " + this.level);
+        }
+    }
+
+    public void upgradeLevel() {
+        Level nextLevel = this.level.getNext();
+        if(nextLevel == null) {
+            throw new IllegalStateException("max level");
+        }
+
+        this.level = nextLevel;
+    }
 }
