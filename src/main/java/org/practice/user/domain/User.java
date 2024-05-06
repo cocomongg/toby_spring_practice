@@ -1,6 +1,9 @@
 package org.practice.user.domain;
 
 public class User {
+    public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+    public static final int MIN_RECOMMEND_FOR_GOLD = 30;
+
     String id;
     String name;
     String password;
@@ -64,9 +67,9 @@ public class User {
     public boolean canUpgradeLevel() {
         switch (this.level) {
             case BASIC:
-                return this.login >= 50;
+                return this.login >= MIN_LOGCOUNT_FOR_SILVER;
             case SILVER:
-                return this.recommend >= 30;
+                return this.recommend >= MIN_RECOMMEND_FOR_GOLD;
             case GOLD:
                 return false;
             default:
