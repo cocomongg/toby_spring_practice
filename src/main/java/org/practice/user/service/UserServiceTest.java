@@ -7,6 +7,7 @@ import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -29,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Autowired
+    MailSender mailSender;
 
     List<User> users;
 
@@ -53,11 +57,11 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-                new User("test1", "test1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
-                new User("test2", "test2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-                new User("test3", "test3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
-                new User("test4", "test4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                new User("test5", "test5", "p5", Level.GOLD, 100, Integer.MAX_VALUE)
+                new User("test1", "test1", "p1", "test1@test.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                new User("test2", "test2", "p2", "test2@test.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+                new User("test3", "test3", "p3", "test3@test.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("test4", "test4", "p4", "test4@test.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                new User("test5", "test5", "p5", "test5@test.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
@@ -106,6 +110,7 @@ public class UserServiceTest {
         UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setTransactionManager(this.transactionManager);
+        testUserService.setMailSender(this.mailSender);
 
         try {
             testUserService.upgradeLevels();

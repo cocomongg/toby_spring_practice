@@ -37,9 +37,12 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        this.user1 = new User("id1", "name1", "password1", Level.BASIC, 1, 0);
-        this.user2 = new User("id2", "name2", "password2", Level.SILVER, 55, 10);
-        this.user3 = new User("id3", "name3", "password3", Level.GOLD, 100, 40);
+        this.user1 = new User("id1", "name1", "password1", "test1@test.com",
+                Level.BASIC, 1, 0);
+        this.user2 = new User("id2", "name2", "password2", "test2@test.com",
+                Level.SILVER, 55, 10);
+        this.user3 = new User("id3", "name3", "password3", "test1@test.com",
+                Level.GOLD, 100, 40);
     }
 
     @AfterEach
