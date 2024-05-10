@@ -8,6 +8,7 @@ import org.practice.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -65,6 +66,7 @@ public class UserServiceTest {
         );
     }
 
+    @DirtiesContext
     @Test
     public void upgradeLevels () throws Exception {
         userDao.deleteAll();
@@ -73,6 +75,9 @@ public class UserServiceTest {
             userDao.addUser(user);
         }
 
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
+
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -80,6 +85,11 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+
+        List<String> requests = mockMailSender.getRequests();
+        assertThat(requests)
+                .hasSize(2)
+                .containsExactly(users.get(1).getEmail(), users.get(3).getEmail());
     }
 
     @Test

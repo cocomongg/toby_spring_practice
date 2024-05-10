@@ -20,6 +20,7 @@ public class UserDaoJdbc implements UserDao{
                     user.setId(rs.getString("id"));
                     user.setName(rs.getString("name"));
                     user.setPassword(rs.getString("password"));
+                    user.setEmail(rs.getString("email"));
                     user.setLevel(Level.valueOf(rs.getInt("level")));
                     user.setLogin(rs.getInt("login"));
                     user.setRecommend(rs.getInt("recommend"));
@@ -34,9 +35,9 @@ public class UserDaoJdbc implements UserDao{
     }
 
     public void addUser(User user) {
-        this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) " +
-                        "values (?, ?, ?, ?, ?, ?)",
-                user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(),
+        this.jdbcTemplate.update("insert into users(id, name, password, email, level, login, recommend) " +
+                        "values (?, ?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().getValue(),
                 user.getLogin(), user.getRecommend());
     }
 
