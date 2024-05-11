@@ -9,20 +9,23 @@
         <property name="password" value="pcs8437!"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <bean id="userService" class="org.practice.user.service.UserService">
-        <property name="userDao" ref="userDao"/>
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="mailSender" ref="mailSender"/>
-    </bean>
-
     <bean id="userDao" class="org.practice.user.dao.basicdao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="mailSender" class="org.practice.user.service.DummyMailSender">
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="mailSender" class="org.practice.user.service.DummyMailSender"/>
+
+    <bean id="userService" class="org.practice.user.service.UserServiceTx">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="org.practice.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
     </bean>
 </beans>

@@ -27,6 +27,9 @@ public class UserServiceTest {
     UserService userService;
 
     @Autowired
+    UserServiceImpl userServiceImpl;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
@@ -37,7 +40,7 @@ public class UserServiceTest {
 
     List<User> users;
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
@@ -76,9 +79,9 @@ public class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
-        userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
         checkLevelUpgraded(users.get(1), true);
@@ -117,13 +120,16 @@ public class UserServiceTest {
             userDao.addUser(user);
         }
 
-        UserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(this.transactionManager);
-        testUserService.setMailSender(this.mailSender);
+        UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(userDao);
+        testUserService.setMailSender(mailSender);
+
+        UserServiceTx userServiceTx = new UserServiceTx();
+        userServiceTx.setUserService(testUserService);
+        userServiceTx.setTransactionManager(transactionManager);
 
         try {
-            testUserService.upgradeLevels();
+            userServiceTx.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
 
