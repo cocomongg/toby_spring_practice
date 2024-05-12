@@ -2,6 +2,7 @@ package org.practice.user.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.practice.user.dao.basicdao.MockUserDao;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
@@ -72,22 +73,19 @@ public class UserServiceTest {
     @DirtiesContext
     @Test
     public void upgradeLevels () throws Exception {
-        userDao.deleteAll();
-
-        for(User user : users) {
-            userDao.addUser(user);
-        }
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
 
         MockMailSender mockMailSender = new MockMailSender();
         userServiceImpl.setMailSender(mockMailSender);
 
         userServiceImpl.upgradeLevels();
 
-        checkLevelUpgraded(users.get(0), false);
-        checkLevelUpgraded(users.get(1), true);
-        checkLevelUpgraded(users.get(2), false);
-        checkLevelUpgraded(users.get(3), true);
-        checkLevelUpgraded(users.get(4), false);
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated).hasSize(2);
+        this.checkUserAndLevel(updated.get(0), "test2", Level.SILVER);
+        this.checkUserAndLevel(updated.get(1), "test4", Level.GOLD);
 
         List<String> requests = mockMailSender.getRequests();
         assertThat(requests)
@@ -145,6 +143,10 @@ public class UserServiceTest {
         } else {
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
         }
+    }
 
+    private void checkUserAndLevel(User updated, String expected, Level expectedLevel) {
+        assertThat(updated.getId()).isEqualTo(expected);
+        assertThat(updated.getLevel()).isEqualTo(expectedLevel);
     }
 }
