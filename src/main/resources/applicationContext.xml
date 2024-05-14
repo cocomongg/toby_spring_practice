@@ -22,9 +22,11 @@
         <property name="host" value="mail.server.com"/>
     </bean>
 
-    <bean id="userService" class="org.practice.user.service.UserServiceTx">
+    <bean id="userService" class="org.practice.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
         <property name="transactionManager" ref="transactionManager"/>
-        <property name="userService" ref="userServiceImpl"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="org.practice.user.service.UserService"/>
     </bean>
 
     <bean id="userServiceImpl" class="org.practice.user.service.UserServiceImpl">

@@ -3,18 +3,19 @@ package org.practice.user.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.practice.user.dao.basicdao.MockUserDao;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,9 @@ import static org.practice.user.domain.User.MIN_RECOMMEND_FOR_GOLD;
 @SpringBootTest
 @ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserServiceTest {
+    @Autowired
+    ApplicationContext context;
+
     @Autowired
     UserService userService;
 
@@ -118,20 +122,21 @@ public class UserServiceTest {
         assertThat(getUserWithoutLevel.getLevel()).isEqualTo(userWithoutLevel.getLevel());
     }
 
+    @DirtiesContext
     @Test
     public void upgradeAllOrNothing() throws Exception {
-        userDao.deleteAll();
-        for(User user : users) {
-            userDao.addUser(user);
-        }
-
         UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender);
 
-        UserServiceTx userServiceTx = new UserServiceTx();
-        userServiceTx.setUserService(testUserService);
-        userServiceTx.setTransactionManager(transactionManager);
+        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(testUserService);
+        UserService userServiceTx = (UserService) txProxyFactoryBean.getObject();
+
+        userDao.deleteAll();
+        for(User user : users) {
+            userDao.addUser(user);
+        }
 
         try {
             userServiceTx.upgradeLevels();
