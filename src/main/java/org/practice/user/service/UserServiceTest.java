@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -129,9 +130,9 @@ public class UserServiceTest {
         testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender);
 
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService userServiceTx = (UserService) txProxyFactoryBean.getObject();
+        ProxyFactoryBean pfBean = context.getBean("&userService", ProxyFactoryBean.class);
+        pfBean.setTarget(testUserService);
+        UserService userServiceTx = (UserService) pfBean.getObject();
 
         userDao.deleteAll();
         for(User user : users) {
