@@ -3,6 +3,8 @@ package org.practice.learningtest.proxy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -72,4 +74,45 @@ public class ProxyTest {
         assertThat(proxiedHello.sayHi("toby")).isEqualTo("HI TOBY");
         assertThat(proxiedHello.sayThankYou("toby")).isEqualTo("Thank You toby");
     }
+
+    @Test
+    public void classNamePointcutAdvisor() {
+        NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+            public ClassFilter getClassFilter() {
+                return new ClassFilter() {
+                    @Override
+                    public boolean matches(Class<?> clazz) {
+                        return clazz.getSimpleName().startsWith("HelloT");
+                    }
+                };
+            };
+        };
+        classMethodPointcut.setMappedName("sayH*");
+
+        checkAdviced(new HelloTarget(), classMethodPointcut, true);
+
+        class HelloWorld extends HelloTarget{};
+        checkAdviced(new HelloWorld(), classMethodPointcut, false);
+
+        class HelloToby extends HelloTarget{};
+        checkAdviced(new HelloToby(), classMethodPointcut, true);
+    }
+
+    private void checkAdviced(Object target, Pointcut pointcut, boolean adviced) {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(target);
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        if(adviced) {
+            assertThat(proxiedHello.sayHello("toby")).isEqualTo("HELLO TOBY");
+            assertThat(proxiedHello.sayHi("toby")).isEqualTo("HI TOBY");
+            assertThat(proxiedHello.sayThankYou("toby")).isEqualTo("Thank You toby");
+        } else {
+            assertThat(proxiedHello.sayHello("toby")).isEqualTo("Hello toby");
+            assertThat(proxiedHello.sayHi("toby")).isEqualTo("Hi toby");
+            assertThat(proxiedHello.sayThankYou("toby")).isEqualTo("Thank You toby");
+        }
+    }
+
 }

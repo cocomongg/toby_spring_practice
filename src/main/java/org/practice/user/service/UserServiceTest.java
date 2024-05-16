@@ -16,7 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class UserServiceTest {
     UserService userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -49,12 +48,8 @@ public class UserServiceTest {
 
     List<User> users;
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
-
-        private TestUserService(String id) {
-            this.id = id;
-        }
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "test4";
 
         @Override
         public void upgradeLevel(User user) {
@@ -123,24 +118,15 @@ public class UserServiceTest {
         assertThat(getUserWithoutLevel.getLevel()).isEqualTo(userWithoutLevel.getLevel());
     }
 
-    @DirtiesContext
     @Test
     public void upgradeAllOrNothing() throws Exception {
-        UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(mailSender);
-
-        ProxyFactoryBean pfBean = context.getBean("&userService", ProxyFactoryBean.class);
-        pfBean.setTarget(testUserService);
-        UserService userServiceTx = (UserService) pfBean.getObject();
-
         userDao.deleteAll();
         for(User user : users) {
-            userDao.addUser(user);
+            userDao.addUser(ugtyhjser);
         }
 
         try {
-            userServiceTx.upgradeLevels();
+            this.testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
 
