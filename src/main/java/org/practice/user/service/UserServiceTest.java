@@ -122,7 +122,7 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() throws Exception {
         userDao.deleteAll();
         for(User user : users) {
-            userDao.addUser(ugtyhjser);
+            userDao.addUser(user);
         }
 
         try {
