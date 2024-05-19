@@ -35,19 +35,20 @@
 <!--        <property name="transactionManager" ref="transactionManager"/>-->
 <!--    </bean>-->
 
-    <tx:advice id="transactionAdvice"> <!-- TransactionInterceptor -->
-        <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>
+<!--    <tx:advice id="transactionAdvice"> &lt;!&ndash; TransactionInterceptor &ndash;&gt;-->
+<!--        <tx:attributes>-->
+<!--            <tx:method name="get*" read-only="true"/>-->
+<!--            <tx:method name="*"/>-->
+<!--        </tx:attributes>-->
+<!--    </tx:advice>-->
 
     <!--    <aop:config> &lt;!&ndash; DefaultAdvisorAutoProxyCreator &ndash;&gt;-->
 <!--        <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/> &lt;!&ndash; AspectJExpressionPointcut &ndash;&gt;-->
 <!--        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/> &lt;!&ndash; DefaultPointcutAdvisor &ndash;&gt;-->
 <!--    </aop:config>-->
 
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
+<!--    <aop:config>-->
+<!--        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>-->
+<!--    </aop:config>-->
+    <tx:annotation-driven/>
 </beans>
