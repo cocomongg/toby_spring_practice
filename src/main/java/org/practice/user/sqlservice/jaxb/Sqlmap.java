@@ -2,11 +2,13 @@
 // 이 파일은 JAXB(JavaTM Architecture for XML Binding) 참조 구현 2.2.8-b130911.1802 버전을 통해 생성되었습니다. 
 // <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>를 참조하십시오. 
 // 이 파일을 수정하면 소스 스키마를 재컴파일할 때 수정 사항이 손실됩니다. 
-// 생성 날짜: 2024.05.20 시간 08:52:08 PM KST 
+// 생성 날짜: 2024.05.23 시간 01:00:09 AM KST 
 //
 
 
 package org.practice.user.sqlservice.jaxb;
+
+import org.practice.user.sqlservice.jaxb.SqlType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "sql"
 })
-@XmlRootElement(name = "sqlmap.xml")
+@XmlRootElement(name = "sqlmap")
 public class Sqlmap {
 
     @XmlElement(required = true)

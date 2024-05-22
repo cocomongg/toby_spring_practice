@@ -1,6 +1,5 @@
 package org.practice.user.sqlservice;
 
-import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.sqlservice.jaxb.SqlType;
 import org.practice.user.sqlservice.jaxb.Sqlmap;
 import org.springframework.util.StringUtils;
@@ -8,7 +7,7 @@ import org.springframework.util.StringUtils;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +20,7 @@ public class XmlSqlService implements SqlService{
         try {
             JAXBContext context = JAXBContext.newInstance(contextPath);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            InputStream is = this.getClass().getResourceAsStream("/sqlmap.xml");
-            Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(is);
+            Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(getXmlFile("sqlmap.xml"));
 
             for(SqlType sql : sqlmap.getSql()) {
                 sqlMap.put(sql.getKey(), sql.getValue());
@@ -41,5 +39,10 @@ public class XmlSqlService implements SqlService{
         }
 
         return sql;
+    }
+
+    private File getXmlFile(String fileName) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(classLoader.getResource(fileName).getFile());
     }
 }
