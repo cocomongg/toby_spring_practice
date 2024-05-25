@@ -18,7 +18,9 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="org.practice.user.sqlservice.XmlSqlService"/>
+    <bean id="sqlService" class="org.practice.user.sqlservice.XmlSqlService">
+        <property name="sqlmapFile" value="sqlmap.xml"/>
+    </bean>
 
 <!--    <bean id="sqlService" class="org.practice.user.sqlservice.SimpleSqlService">-->
 <!--        <property name="sqlMap">-->
