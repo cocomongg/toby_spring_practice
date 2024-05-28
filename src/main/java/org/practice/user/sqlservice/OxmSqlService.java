@@ -2,12 +2,13 @@ package org.practice.user.sqlservice;
 
 import org.practice.user.sqlservice.jaxb.SqlType;
 import org.practice.user.sqlservice.jaxb.Sqlmap;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
 import javax.annotation.PostConstruct;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
 import java.io.IOException;
 
 public class OxmSqlService implements SqlService {
@@ -25,8 +26,8 @@ public class OxmSqlService implements SqlService {
         this.oxmSqlReader.setUnmarshaller(unmarshaller);
     }
 
-    public void setSqlmapFile(String sqlmapFile) {
-        this.oxmSqlReader.setSqlmapFile(sqlmapFile);
+    public void setSqlmap(Resource sqlmap) {
+        this.oxmSqlReader.setSqlmap(sqlmap);
     }
 
     @PostConstruct
@@ -43,22 +44,21 @@ public class OxmSqlService implements SqlService {
     }
 
     private class OxmSqlReader implements SqlReader {
-        private final static String DEFAULT_SQLMAP_FILE = "sqlmap.xml";
         private Unmarshaller unmarshaller;
-        private String sqlmapFile = DEFAULT_SQLMAP_FILE;
+        private Resource sqlmap = new ClassPathResource("sqlmap.xml");
 
         public void setUnmarshaller(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
         }
 
-        public void setSqlmapFile(String sqlmapFile) {
-            this.sqlmapFile = sqlmapFile;
+        public void setSqlmap(Resource sqlmap) {
+            this.sqlmap = sqlmap;
         }
 
         @Override
         public void read(SqlRegistry sqlRegistry) {
             try {
-                Source xmlSource = new StreamSource(this.getXmlFile(this.sqlmapFile));
+                Source xmlSource = new StreamSource(sqlmap.getInputStream());
                 Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(xmlSource);
 
                 for(SqlType sql : sqlmap.getSql()) {
@@ -67,11 +67,6 @@ public class OxmSqlService implements SqlService {
             } catch (IOException e) {
                 throw new IllegalArgumentException();
             }
-        }
-
-        private File getXmlFile(String fileName) {
-            ClassLoader classLoader = getClass().getClassLoader();
-            return new File(classLoader.getResource(fileName).getFile());
         }
     }
 }
