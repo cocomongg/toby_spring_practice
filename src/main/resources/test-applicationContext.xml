@@ -22,14 +22,20 @@
 <!--        <property name="sqlReader" ref="sqlReader"/>-->
 <!--        <property name="sqlRegistry" ref="sqlRegistry"/>-->
 <!--    </bean>-->
-    <bean id="sqlService" class="org.practice.user.sqlservice.DefaultSqlService"/>
 
+    <bean id="sqlService" class="org.practice.user.sqlservice.OxmSqlService" >
+        <property name="unmarshaller" ref="unmarshaller"/>
+    </bean>
 
     <bean id="sqlReader" class="org.practice.user.sqlservice.JaxbXmlSqlReader">
         <property name="sqlmapFile" value="sqlmap.xml"/>
     </bean>
 
     <bean id="sqlRegistry" class="org.practice.user.sqlservice.HashMapSqlRegistry"/>
+
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="org.practice.user.sqlservice.jaxb"/>
+    </bean>
 
 <!--    <bean id="sqlService" class="org.practice.user.sqlservice.SimpleSqlService">-->
 <!--        <property name="sqlMap">-->
