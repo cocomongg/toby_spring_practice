@@ -1,4 +1,4 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;

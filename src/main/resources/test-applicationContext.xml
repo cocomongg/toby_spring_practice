@@ -28,11 +28,11 @@
         <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
 
-    <bean id="sqlReader" class="org.practice.user.sqlservice.JaxbXmlSqlReader">
+    <bean id="sqlReader" class="org.practice.user.sqlservice.reader.JaxbXmlSqlReader">
         <property name="sqlmapFile" value="sqlmap.xml"/>
     </bean>
 
-    <bean id="sqlRegistry" class="org.practice.user.sqlservice.EmbeddedDbSqlRegistry">
+    <bean id="sqlRegistry" class="org.practice.user.sqlservice.registry.EmbeddedDbSqlRegistry">
         <property name="dataSource" ref="embeddedDatabase"/>
     </bean>
 

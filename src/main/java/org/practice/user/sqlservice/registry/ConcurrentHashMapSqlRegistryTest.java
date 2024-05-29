@@ -1,4 +1,4 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
 public class ConcurrentHashMapSqlRegistryTest extends AbstractUpdatableSqlRegistryTest{
     @Override

@@ -1,7 +1,9 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.practice.user.sqlservice.exception.SqlNotFoundException;
+import org.practice.user.sqlservice.exception.SqlUpdateFailureException;
 
 import java.util.HashMap;
 import java.util.Map;

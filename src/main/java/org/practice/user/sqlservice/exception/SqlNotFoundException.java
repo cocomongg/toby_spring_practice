@@ -1,4 +1,4 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.exception;
 
 public class SqlNotFoundException extends RuntimeException {
     public SqlNotFoundException(String message) {

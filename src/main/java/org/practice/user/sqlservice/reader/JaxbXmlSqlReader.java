@@ -1,7 +1,8 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.reader;
 
 import org.practice.user.sqlservice.jaxb.SqlType;
 import org.practice.user.sqlservice.jaxb.Sqlmap;
+import org.practice.user.sqlservice.registry.SqlRegistry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

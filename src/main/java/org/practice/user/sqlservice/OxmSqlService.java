@@ -1,7 +1,11 @@
 package org.practice.user.sqlservice;
 
+import org.practice.user.sqlservice.exception.SqlRetrievalFailureException;
 import org.practice.user.sqlservice.jaxb.SqlType;
 import org.practice.user.sqlservice.jaxb.Sqlmap;
+import org.practice.user.sqlservice.reader.SqlReader;
+import org.practice.user.sqlservice.registry.HashMapSqlRegistry;
+import org.practice.user.sqlservice.registry.SqlRegistry;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;

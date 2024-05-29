@@ -1,5 +1,10 @@
 package org.practice.user.sqlservice;
 
+import org.practice.user.sqlservice.exception.SqlNotFoundException;
+import org.practice.user.sqlservice.exception.SqlRetrievalFailureException;
+import org.practice.user.sqlservice.reader.SqlReader;
+import org.practice.user.sqlservice.registry.SqlRegistry;
+
 import javax.annotation.PostConstruct;
 
 public class BaseSqlService implements SqlService {

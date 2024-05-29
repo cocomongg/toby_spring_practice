@@ -1,5 +1,6 @@
 package org.practice.user.sqlservice;
 
+import org.practice.user.sqlservice.exception.SqlRetrievalFailureException;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;

@@ -1,5 +1,7 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
+import org.practice.user.sqlservice.exception.SqlNotFoundException;
+import org.practice.user.sqlservice.exception.SqlUpdateFailureException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 

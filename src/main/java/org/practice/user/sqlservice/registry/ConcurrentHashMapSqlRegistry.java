@@ -1,12 +1,13 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
-import org.assertj.core.data.MapEntry;
+import org.practice.user.sqlservice.exception.SqlNotFoundException;
+import org.practice.user.sqlservice.exception.SqlUpdateFailureException;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcurrentHashMapSqlRegistry implements UpdatableSqlRegistry{
+public class ConcurrentHashMapSqlRegistry implements UpdatableSqlRegistry {
     private Map<String, String> sqlmap = new ConcurrentHashMap<>();
 
     @Override

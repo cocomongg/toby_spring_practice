@@ -1,5 +1,6 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
 
+import org.practice.user.sqlservice.exception.SqlNotFoundException;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;

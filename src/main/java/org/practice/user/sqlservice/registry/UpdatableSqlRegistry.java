@@ -1,4 +1,6 @@
-package org.practice.user.sqlservice;
+package org.practice.user.sqlservice.registry;
+
+import org.practice.user.sqlservice.exception.SqlUpdateFailureException;
 
 import java.util.Map;
 
