@@ -22,6 +22,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'javax.activation:activation:1.1.1'
+    runtimeOnly 'org.hsqldb:hsqldb'
 }
 
 test {
