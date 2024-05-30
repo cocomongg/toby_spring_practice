@@ -3,6 +3,7 @@ package org.practice.user.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.practice.config.TestApplicationContext;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
@@ -30,7 +31,7 @@ import static org.practice.user.domain.User.MIN_LOGCOUNT_FOR_SILVER;
 import static org.practice.user.domain.User.MIN_RECOMMEND_FOR_GOLD;
 
 @SpringBootTest
-@ContextConfiguration(locations = "/test-applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserServiceTest {
     @Autowired
     ApplicationContext context;
@@ -52,7 +53,7 @@ public class UserServiceTest {
 
     List<User> users;
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    public static class TestUserServiceImpl extends UserServiceImpl {
         private String id = "test4";
 
         @Override
