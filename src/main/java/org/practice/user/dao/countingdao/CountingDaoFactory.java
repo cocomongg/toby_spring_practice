@@ -11,9 +11,9 @@ import javax.sql.DataSource;
 @Configuration
 public class CountingDaoFactory {
     @Bean
-    public UserDao userDao () {
+    public UserDao userCountingDao () {
         UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
-        userDaoJdbc.setDataSource(dataSource());
+        userDaoJdbc.setDataSource(countingConnectionDataSource());
         return userDaoJdbc;
     }
 
@@ -30,7 +30,7 @@ public class CountingDaoFactory {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource countingConnectionDataSource() {
         return new CountingConnectionDataSource(this.realDataSource());
     }
 }

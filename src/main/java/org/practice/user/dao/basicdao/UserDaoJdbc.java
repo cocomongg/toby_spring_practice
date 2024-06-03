@@ -3,8 +3,13 @@ package org.practice.user.dao.basicdao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
 import org.practice.user.sqlservice.SqlService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -12,11 +17,20 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+@Repository("userDao")
 public class UserDaoJdbc implements UserDao{
+    @Autowired
     private SqlService sqlService;
+
+    private JdbcTemplate jdbcTemplate;
 
     public void setSqlService(SqlService sqlService) {
         this.sqlService = sqlService;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     private RowMapper<User> userRowMapper =
@@ -34,12 +48,6 @@ public class UserDaoJdbc implements UserDao{
                     return user;
                 }
             };
-
-    private JdbcTemplate jdbcTemplate;
-
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     public void addUser(User user) {
         this.jdbcTemplate.update(

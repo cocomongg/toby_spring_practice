@@ -2,7 +2,6 @@ package org.practice.config;
 
 import com.mysql.cj.jdbc.Driver;
 import org.practice.user.dao.basicdao.UserDao;
-import org.practice.user.dao.basicdao.UserDaoJdbc;
 import org.practice.user.service.DummyMailSender;
 import org.practice.user.service.UserService;
 import org.practice.user.service.UserServiceImpl;
@@ -12,6 +11,7 @@ import org.practice.user.sqlservice.registry.EmbeddedDbSqlRegistry;
 import org.practice.user.sqlservice.registry.SqlRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -27,12 +27,10 @@ import javax.sql.DataSource;
 
 import static org.practice.user.service.UserServiceTest.TestUserServiceImpl;
 
+@ComponentScan(basePackages ="org.practice.user")
 @EnableTransactionManagement
 @Configuration
 public class TestApplicationContext {
-//    @Autowired
-//    private SqlService sqlService;
-
     @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
@@ -48,24 +46,6 @@ public class TestApplicationContext {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
-    }
-
-    @Bean
-    public UserDao userDao(DataSource dataSource, SqlService sqlService) {
-        UserDaoJdbc dao = new UserDaoJdbc();
-        dao.setDataSource(dataSource);
-        dao.setSqlService(sqlService);
-
-        return dao;
-    }
-
-    @Bean
-    public UserService userService(UserDao userDao, MailSender mailSender) {
-        UserServiceImpl service = new UserServiceImpl();
-        service.setUserDao(userDao);
-        service.setMailSender(mailSender);
-
-        return service;
     }
 
     @Bean

@@ -3,20 +3,25 @@ package org.practice.user.service;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service("userService")
 public class UserServiceImpl implements UserService{
     private UserDao userDao;
 
     private MailSender mailSender;
 
+    @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
+    @Autowired
     public void setMailSender(MailSender mailSender) {
         this.mailSender = mailSender;
     }
