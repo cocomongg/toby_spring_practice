@@ -3,11 +3,11 @@ package org.practice.user.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.practice.config.TestApplicationContext;
+import org.practice.config.AppContext;
+import org.practice.config.TestAppContext;
 import org.practice.user.dao.basicdao.UserDao;
 import org.practice.user.domain.Level;
 import org.practice.user.domain.User;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +15,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -31,7 +32,8 @@ import static org.practice.user.domain.User.MIN_LOGCOUNT_FOR_SILVER;
 import static org.practice.user.domain.User.MIN_RECOMMEND_FOR_GOLD;
 
 @SpringBootTest
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ActiveProfiles("test")
+@ContextConfiguration(classes = AppContext.class)
 public class UserServiceTest {
     @Autowired
     ApplicationContext context;
